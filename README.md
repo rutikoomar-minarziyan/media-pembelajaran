@@ -14,10 +14,18 @@ Peserta didik berperan sebagai penjelajah yang menempuh empat pos (level) secara
 
 ## Salindia dan video interaktif
 Setiap pos dilengkapi dua materi pendukung yang dibuka dari kartu di atas *Bekal materi* (juga di halaman **Materi**):
-- **Salindia** (6–7 salindia per pos): layar penuh, butir muncul bertahap, navigasi tombol/papan ketik/geser di ponsel. Cocok juga ditayangkan guru di proyektor.
-- **Video interaktif** (±1 menit per pos): animasi bernarasi bersama pemandu “Kak Rani”, teks narasi (CC), suara narator bahasa Indonesia bila perangkat menyediakannya, pengatur kecepatan, dan **kuis cepat** yang menghentikan video sampai dijawab dengan benar.
+- **Salindia** (8–12 salindia per pos): layar penuh, butir muncul bertahap, dan salindia **“Tebak dulu!”** yang meminta siswa menjawab sebelum melanjutkan sehingga tidak satu arah.
+- **Video interaktif** (±1–1,5 menit per pos): animasi bernarasi bersama pemandu “Kak Rani”, teks narasi (CC), pengatur kecepatan, dan **kuis cepat** yang menghentikan video sampai dijawab benar.
 
-Isinya disunting di `js/media.js`.
+Isi salindia dan video disusun berdasarkan analisis kebutuhan pada tesis: kesulitan merumuskan tesis, kalimat efektif, dan ejaan (wawancara guru); kesulitan menemukan gagasan, menyusun struktur, memilih kata (angket); pengaruh bahasa media sosial dan AI; rendahnya inisiatif merevisi; serta prinsip kemajuan dari kosakata sehari-hari ke ilmiah. Isinya disunting di `js/media.js`.
+
+### Suara narator
+Pemutar memilih suara dengan urutan berikut:
+1. **Rekaman suara manusia** — bila berkas `audio/<pos>/<nomor-adegan>.mp3` tersedia lengkap untuk satu pos (contoh `audio/pos1/1.mp3` … `audio/pos1/7.mp3`). Naskahnya ada di [`audio/NASKAH-NARASI.md`](audio/NASKAH-NARASI.md); buat ulang setelah menyunting narasi dengan `node tools/buat-naskah.js`.
+2. **Suara alami (neural) perangkat** — misalnya “Microsoft Gadis/Ardi Online (Natural)” di Microsoft Edge atau suara Google di Chrome/Android.
+3. Suara bahasa Indonesia lain yang tersedia, atau teks saja.
+
+Siswa dapat mengganti suara melalui tombol 🔊 di pemutar. Narasi dibacakan per kalimat dengan jeda agar terdengar wajar.
 
 ## Elemen gamifikasi
 - **Poin** untuk setiap soal dan misi, serta **bonus revisi** di Pos 4.
@@ -46,6 +54,8 @@ index.html        kerangka halaman
 css/style.css     tampilan (mode terang/gelap, ramah ponsel)
 js/media.js       isi salindia, narasi video, dan kuis video
 js/media-player.js pemutar salindia & video interaktif
+audio/            rekaman narasi (opsional) dan NASKAH-NARASI.md
+tools/buat-naskah.js  pembuat naskah narasi dari js/media.js
 js/data.js        SELURUH isi materi, soal, misi, lencana, rubrik, dan kamus pemeriksa
 js/app.js         logika aplikasi
 ```

@@ -579,3 +579,27 @@ body.terkunci-gulir { overflow: hidden; }
 .vd-adegan { color: var(--ink); }
 .pm-btn.primer:hover:not(:disabled) { background: #f0b04d; }
 .awan { background: rgba(255,255,255,.35); filter: blur(2px); }
+
+/* ---------- Salindia "Tebak dulu!" ---------- */
+.sl-tebak { background: radial-gradient(circle at 0 100%, var(--primary-soft), transparent 45%), linear-gradient(180deg, var(--surface), var(--surface-2)); }
+.sl-kicker.gelap { color: var(--accent); }
+.sl-tebak .sl-judul { font-size: clamp(18px, 3.4cqi, 32px); color: var(--ink); }
+.sl-opsi { display: grid; gap: clamp(6px, 1.4cqi, 12px); }
+.sl-opsi-btn { display: flex; gap: 12px; align-items: center; text-align: left; font: inherit; font-size: .95em; color: var(--ink); background: var(--surface); border: 2px solid var(--line); border-radius: 12px; padding: .6em .9em; cursor: pointer; }
+.sl-opsi-btn:hover:not(:disabled) { border-color: var(--primary); }
+.sl-opsi-btn span { flex: none; width: 1.8em; height: 1.8em; border-radius: 8px; display: grid; place-items: center; background: var(--accent-soft); font-weight: 800; }
+.sl-opsi-btn.benar { background: var(--ok-soft); border-color: var(--ok); }
+.sl-opsi-btn.salah { background: var(--bad-soft); border-color: var(--bad); text-decoration: line-through; opacity: .75; }
+.sl-opsi-btn:disabled { cursor: default; }
+.sl-umpan { margin: 0; font-weight: 600; font-size: .9em; min-height: 1.4em; }
+.sl-umpan.ok { color: var(--ok); } .sl-umpan.belum { color: var(--bad); }
+
+/* ---------- Panel pilihan suara ---------- */
+.vd-panel-suara { position: absolute; right: 3%; bottom: 3%; z-index: 6; width: min(94%, 340px); max-height: 80%; overflow: auto; background: var(--surface); color: var(--ink); border-radius: 14px; padding: 12px; box-shadow: 0 12px 36px rgba(0,0,0,.4); display: grid; gap: 6px; animation: kuis-masuk .25s ease-out; }
+.vd-panel-suara[hidden] { display: none; }
+.vd-ps-judul { margin: 0 0 4px; font-weight: 800; font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+.vd-panel-suara button { font: inherit; font-size: .88rem; text-align: left; color: var(--ink); background: var(--surface-2); border: 1.5px solid var(--line); border-radius: 10px; padding: 8px 10px; cursor: pointer; }
+.vd-panel-suara button:hover { border-color: var(--primary); }
+.vd-panel-suara button.pilih { border-color: var(--primary); background: var(--primary-soft); font-weight: 700; }
+.vd-panel-suara small { font-size: .7rem; font-weight: 800; color: var(--ok); background: var(--ok-soft); padding: 1px 6px; border-radius: 999px; margin-left: 4px; }
+.vd-ps-saran { margin: 4px 0 0; font-size: .8rem; color: var(--muted); }
