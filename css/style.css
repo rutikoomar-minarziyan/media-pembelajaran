@@ -603,3 +603,16 @@ body.terkunci-gulir { overflow: hidden; }
 .vd-panel-suara button.pilih { border-color: var(--primary); background: var(--primary-soft); font-weight: 700; }
 .vd-panel-suara small { font-size: .7rem; font-weight: 800; color: var(--ok); background: var(--ok-soft); padding: 1px 6px; border-radius: 999px; margin-left: 4px; }
 .vd-ps-saran { margin: 4px 0 0; font-size: .8rem; color: var(--muted); }
+
+/* ---------- Admin ---------- */
+.btn.bahaya { background: var(--bad); color: #fff; box-shadow: 0 3px 0 color-mix(in srgb, var(--bad) 60%, #000); }
+.btn.bahaya:hover:not(:disabled) { filter: brightness(1.06); }
+.admin-tautan { margin-top: 18px; max-width: 720px; text-align: right; }
+.admin-masuk { max-width: 420px; }
+.admin-kepala { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.admin-kepala .aksi { margin: 0; }
+.admin-aksi { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 18px; }
+.admin-aksi .kartu { margin: 0; display: flex; flex-direction: column; }
+.admin-aksi .kartu > .btn, .admin-aksi .kartu > .aksi { margin-top: auto; }
+.admin-aksi .kartu > .btn { align-self: flex-start; }
+.stat span { display: block; }

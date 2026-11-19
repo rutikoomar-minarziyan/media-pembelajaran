@@ -42,6 +42,14 @@ Buka tautan **Panel Guru** di bagian bawah halaman (`#/guru`):
 3. Guru membaca tulisan (draf pertama dan akhir), melihat penilaian diri, lalu menilai dengan **rubrik lima aspek (Tabel 3.7)**; nilai = (jumlah skor : 20) × 100.
 4. Rekap dapat diekspor ke **CSV** (Excel/Google Sheets) untuk analisis pretest–posttest/N-Gain, dan papan peringkat kelas dapat ditampilkan di proyektor.
 
+## Panel Admin (reset peringkat)
+Buka **Papan Peringkat → 🔒 Admin: reset peringkat** atau tautan **Admin** di bagian bawah halaman (`#/admin`), lalu masukkan password admin. Pilih kelas (atau semua kelas), kemudian:
+- **Reset poin** — poin menjadi 0 untuk putaran baru; kemajuan, lencana, tulisan, dan nilai rubrik tetap tersimpan.
+- **Kosongkan data kelas** — menghapus kode hasil yang dimasukkan di Panel Guru (ekspor CSV dahulu bila perlu).
+- **Reset total** — menghapus profil penjelajah beserta kemajuannya di perangkat ini.
+
+Panel terkunci kembali saat tab ditutup atau tombol **Kunci panel** ditekan; lima kali salah password mengunci formulir selama 30 detik. Password disimpan sebagai sidik SHA-256 di `js/app.js` (`HASH_ADMIN`). Untuk menggantinya, hitung SHA-256 password baru lalu ganti nilai tersebut.
+
 ## Menjalankan
 Tidak perlu instalasi atau server. Cukup buka `index.html` di peramban.
 

@@ -186,7 +186,7 @@
     window.scrollTo(0, 0);
     tandaiNav();
     perbaruiChip();
-    if (!P() && !["", "petunjuk", "guru", "materi", "rubrik"].includes(hal)) return halBeranda();
+    if (!P() && !["", "petunjuk", "guru", "materi", "rubrik", "admin"].includes(hal)) return halBeranda();
     switch (hal) {
       case "": return P() ? halPeta() : halBeranda();
       case "masuk": return halBeranda();
@@ -199,6 +199,7 @@
       case "rubrik": return halRubrik();
       case "hasil": return halHasil();
       case "guru": return halGuru();
+      case "admin": return halAdmin();
       default: return halPeta();
     }
   }
@@ -1158,12 +1159,175 @@
       <header class="judul-hal"><p class="kicker">Papan Peringkat</p><h1>Penjelajah Teratas</h1>
         <p class="redup">Urutan berdasarkan akumulasi poin. Data kelas tampil setelah guru memasukkan kode hasil peserta didik di Panel Guru pada perangkat ini.</p></header>
       ${kelasList.length > 1 ? `<div class="chip-pilih"><button class="chip aktif" data-k="">Semua kelas</button>${kelasList.map((k) => `<button class="chip" data-k="${esc(k)}">${esc(k)}</button>`).join("")}</div>` : ""}
-      <ol class="papan" id="tabel-papan"></ol>`;
+      <ol class="papan" id="tabel-papan"></ol>
+      <p class="admin-tautan"><a class="btn teks kecil" href="#/admin">🔒 Admin: reset peringkat</a></p>`;
     $$("[data-k]").forEach((b) => b.addEventListener("click", () => {
       filter = b.dataset.k;
       $$("[data-k]").forEach((x) => x.classList.toggle("aktif", x === b));
       gambar();
     }));
+    gambar();
+  }
+
+  /* ---------------- Halaman: Admin (reset peringkat) ---------------- */
+  // Password tidak disimpan apa adanya, hanya sidik SHA-256-nya.
+  const HASH_ADMIN = "f357280df08bebf1ef4c4aeceae3d6ffcfee283cff4508af046465d75f1e4294";
+  const KUNCI_ADMIN = "ekspedisi.admin";
+  function sha256(teks) {
+    // Implementasi SHA-256 ringkas agar berjalan juga di luar konteks aman (http/file)
+    const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+    const bytes = Array.from(new TextEncoder().encode(teks));
+    const len = bytes.length * 8;
+    bytes.push(0x80);
+    while (bytes.length % 64 !== 56) bytes.push(0);
+    for (let i = 7; i >= 0; i--) bytes.push(i > 3 ? 0 : (len >>> (i * 8)) & 0xff);
+    let h = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+    const r = (x, n) => (x >>> n) | (x << (32 - n));
+    for (let o = 0; o < bytes.length; o += 64) {
+      const w = [];
+      for (let i = 0; i < 16; i++) w[i] = (bytes[o+4*i] << 24) | (bytes[o+4*i+1] << 16) | (bytes[o+4*i+2] << 8) | bytes[o+4*i+3];
+      for (let i = 16; i < 64; i++) {
+        const s0 = r(w[i-15], 7) ^ r(w[i-15], 18) ^ (w[i-15] >>> 3);
+        const s1 = r(w[i-2], 17) ^ r(w[i-2], 19) ^ (w[i-2] >>> 10);
+        w[i] = (w[i-16] + s0 + w[i-7] + s1) | 0;
+      }
+      let [a, b, c, d, e, f, g, hh] = h;
+      for (let i = 0; i < 64; i++) {
+        const t1 = (hh + (r(e, 6) ^ r(e, 11) ^ r(e, 25)) + ((e & f) ^ (~e & g)) + K[i] + w[i]) | 0;
+        const t2 = ((r(a, 2) ^ r(a, 13) ^ r(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) | 0;
+        hh = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+      }
+      h = h.map((v, i) => (v + [a, b, c, d, e, f, g, hh][i]) | 0);
+    }
+    return h.map((v) => (v >>> 0).toString(16).padStart(8, "0")).join("");
+  }
+  const adminTerbuka = () => { try { return sessionStorage.getItem(KUNCI_ADMIN) === "1"; } catch (e) { return !!window.__adminSesi; } };
+  function setAdmin(v) {
+    window.__adminSesi = v;
+    try { v ? sessionStorage.setItem(KUNCI_ADMIN, "1") : sessionStorage.removeItem(KUNCI_ADMIN); } catch (e) { /* abaikan */ }
+  }
+  let gagalAdmin = 0, kunciSampai = 0;
+
+  function halAdmin() {
+    if (!adminTerbuka()) {
+      app.innerHTML = `
+        <header class="judul-hal"><p class="kicker">Admin</p><h1>Masuk Panel Admin</h1>
+          <p class="redup">Khusus guru/pembuat media untuk mengatur ulang papan peringkat.</p></header>
+        <section class="kartu admin-masuk">
+          <form id="form-admin" autocomplete="off">
+            <label>Password admin<input type="password" name="sandi" inputmode="numeric" required autofocus></label>
+            <button class="btn primer lebar" type="submit">🔓 Buka panel</button>
+            <div class="umpan" aria-live="polite"></div>
+          </form>
+        </section>`;
+      $("#form-admin").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const u = $("#form-admin .umpan");
+        const sisa = Math.ceil((kunciSampai - Date.now()) / 1000);
+        if (sisa > 0) { u.innerHTML = `<p class="belum">Terlalu banyak percobaan. Coba lagi dalam ${sisa} detik.</p>`; return; }
+        if (sha256(e.target.sandi.value.trim()) === HASH_ADMIN) {
+          gagalAdmin = 0;
+          setAdmin(true);
+          toast("Panel admin terbuka.");
+          halAdmin();
+        } else {
+          gagalAdmin++;
+          if (gagalAdmin >= 5) { kunciSampai = Date.now() + 30000; gagalAdmin = 0; }
+          e.target.sandi.value = "";
+          u.innerHTML = `<p class="belum">Password salah.</p>`;
+        }
+      });
+      return;
+    }
+
+    const lokal = Object.values(store.profil);
+    const kelasList = Array.from(new Set(lokal.map((p) => p.kelas).concat(Object.values(guru.hasil).map((h) => h.kelas)))).sort();
+    let kelas = "";
+    const cocok = (k) => !kelas || k === kelas;
+
+    function gambar() {
+      const nLokal = lokal.filter((p) => cocok(p.kelas)).length;
+      const nKelas = Object.values(guru.hasil).filter((h) => cocok(h.kelas)).length;
+      const lbl = kelas ? `kelas ${esc(kelas)}` : "semua kelas";
+      $("#admin-isi").innerHTML = `
+        <div class="kartu-grid dua ringkas">
+          <div class="stat"><b>${nLokal}</b><span>Penjelajah di perangkat ini (${lbl})</span></div>
+          <div class="stat"><b>${nKelas}</b><span>Data kode hasil di Panel Guru (${lbl})</span></div>
+        </div>
+        <div class="admin-aksi">
+          <article class="kartu">
+            <h3>🔄 Reset poin (mulai putaran baru)</h3>
+            <p class="kecil">Poin ${lbl} menjadi 0 sehingga papan peringkat dimulai dari awal. Kemajuan pos, lencana, tulisan, dan nilai rubrik <b>tetap tersimpan</b>.</p>
+            <button class="btn primer" data-aksi="poin" ${nLokal + nKelas ? "" : "disabled"}>Reset poin</button>
+          </article>
+          <article class="kartu">
+            <h3>🗂️ Kosongkan data kelas dari papan</h3>
+            <p class="kecil">Menghapus kode hasil ${lbl} yang telah dimasukkan di Panel Guru, termasuk nilai rubrik yang telah diberikan. Ekspor CSV terlebih dahulu bila perlu.</p>
+            <div class="aksi">
+              <a class="btn garis" href="#/guru">Ekspor CSV di Panel Guru</a>
+              <button class="btn bahaya" data-aksi="kelas" ${nKelas ? "" : "disabled"}>Kosongkan</button>
+            </div>
+          </article>
+          <article class="kartu">
+            <h3>🧹 Reset total penjelajah di perangkat ini</h3>
+            <p class="kecil">Menghapus profil ${lbl} beserta seluruh kemajuannya di perangkat ini. Gunakan untuk perangkat sekolah yang dipakai bergantian.</p>
+            <button class="btn bahaya" data-aksi="total" ${nLokal ? "" : "disabled"}>Hapus profil</button>
+          </article>
+        </div>`;
+      $$("[data-aksi]").forEach((b) => b.addEventListener("click", () => jalankan(b.dataset.aksi)));
+    }
+
+    function jalankan(aksi) {
+      const lbl = kelas ? `kelas ${kelas}` : "SEMUA kelas";
+      const pesan = {
+        poin: `Reset poin ${lbl} menjadi 0?`,
+        kelas: `Kosongkan data kode hasil ${lbl} dari Panel Guru? Nilai rubrik ikut terhapus.`,
+        total: `Hapus semua profil ${lbl} beserta kemajuannya di perangkat ini?`
+      }[aksi];
+      if (!confirm(pesan + "\n\nTindakan ini tidak dapat dibatalkan.")) return;
+      let n = 0;
+      if (aksi === "poin") {
+        lokal.filter((p) => cocok(p.kelas)).forEach((p) => { p.poin = 0; p.diperbarui = Date.now(); n++; });
+        Object.values(guru.hasil).filter((h) => cocok(h.kelas)).forEach((h) => { h.poin = 0; n++; });
+      } else if (aksi === "kelas") {
+        Object.keys(guru.hasil).forEach((id) => { if (cocok(guru.hasil[id].kelas)) { delete guru.hasil[id]; n++; } });
+      } else if (aksi === "total") {
+        Object.keys(store.profil).forEach((id) => {
+          if (cocok(store.profil[id].kelas)) { delete store.profil[id]; if (store.aktif === id) store.aktif = null; n++; }
+        });
+      }
+      store.resetTerakhir = Date.now();
+      simpan();
+      simpanGuru();
+      perbaruiChip();
+      toast(`Selesai: ${n} data diperbarui.`);
+      halAdmin();
+    }
+
+    app.innerHTML = `
+      <header class="judul-hal admin-kepala">
+        <div><p class="kicker">Admin</p><h1>Reset Peringkat</h1>
+          <p class="redup">Pilih kelas, lalu pilih jenis reset.</p></div>
+        <div class="aksi">
+          <a class="btn garis" href="#/papan">Lihat papan</a>
+          <button class="btn garis" id="kunci-admin">🔒 Kunci panel</button>
+        </div>
+      </header>
+      ${kelasList.length ? `<div class="chip-pilih"><button class="chip aktif" data-k="">Semua kelas</button>${kelasList.map((k) => `<button class="chip" data-k="${esc(k)}">${esc(k)}</button>`).join("")}</div>` : ""}
+      <div id="admin-isi"></div>
+      <section class="kartu catatan-admin">
+        <h3>ℹ️ Catatan</h3>
+        <ul class="kecil">
+          <li>Kemajuan siswa tersimpan di peramban perangkat masing-masing. Reset di sini berlaku untuk perangkat ini (termasuk data kelas di Panel Guru).</li>
+          <li>Jika siswa mengirim ulang kode hasil dari perangkatnya, poin lamanya akan ikut masuk kembali. Untuk putaran baru, minta siswa memulai dengan profil baru atau lakukan reset di perangkat siswa.</li>
+        </ul>
+      </section>`;
+    $$("[data-k]").forEach((b) => b.addEventListener("click", () => {
+      kelas = b.dataset.k;
+      $$("[data-k]").forEach((x) => x.classList.toggle("aktif", x === b));
+      gambar();
+    }));
+    $("#kunci-admin").addEventListener("click", () => { setAdmin(false); toast("Panel admin dikunci."); location.hash = "#/papan"; });
     gambar();
   }
 
