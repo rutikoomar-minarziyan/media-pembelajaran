@@ -29,7 +29,9 @@ const EKSPEDISI = {
     poinMisiTulis: 30,     // poin misi menulis (peta gagasan, argumen)
     poinTulisanAkhir: 50,  // poin menyelesaikan tulisan akhir Pos 4
     poinBonusRevisi: 30,   // bonus revisi maksimum
-    poinPenilaianDiri: 10  // poin mengisi daftar periksa
+    poinPenilaianDiri: 10, // poin mengisi daftar periksa
+    poinSalindia: 5,       // menyimak salindia satu pos hingga akhir
+    poinVideo: 10          // menuntaskan video interaktif satu pos
   },
 
   lencana: {
@@ -38,7 +40,8 @@ const EKSPEDISI = {
     pos3: { nama: "Penyunting Andal", ikon: "🔎", ket: "Menuntaskan Pos 3: Mengasah Bahasa" },
     pos4: { nama: "Penjelajah Ulung", ikon: "🏔️", ket: "Mencapai Puncak Ekspedisi" },
     sempurna: { nama: "Langkah Mantap", ikon: "⭐", ket: "Menjawab seluruh soal satu pos tepat pada percobaan pertama" },
-    perevisi: { nama: "Pantang Menyerah", ikon: "🔁", ket: "Merevisi tulisan akhir hingga skor periksa meningkat" }
+    perevisi: { nama: "Pantang Menyerah", ikon: "🔁", ket: "Merevisi tulisan akhir hingga skor periksa meningkat" },
+    tekun: { nama: "Pembelajar Tekun", ikon: "🎬", ket: "Menyimak semua salindia dan menuntaskan semua video interaktif" }
   },
 
   /* ---------- Daftar pos ---------- */

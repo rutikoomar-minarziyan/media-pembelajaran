@@ -41,6 +41,7 @@
       soal: {},         // soalKey -> {benar:bool, coba:int}
       peta: null,
       argumen: null,
+      media: { salindia: {}, video: {} },
       tulisan: { judul: "", teks: "", versi: [], diri: [0, 0, 0, 0, 0], final: false, bonus: 0 },
       dibuat: Date.now(),
       diperbarui: Date.now()
@@ -387,7 +388,8 @@
         <div class="pos-progres"><b>${nMisi}/${pos.misi.length}</b><span>misi</span></div>
       </header>
       <div class="cerita"><span aria-hidden="true">📜</span><p>${esc(pos.cerita)}</p></div>
-      <details class="materi" ${nMisi === 0 ? "open" : ""}>
+      <div class="media-baris" data-media="${pos.id}">${kartuMedia(pos)}</div>
+      <details class="materi">
         <summary>🎒 Bekal materi Pos ${pos.nomor}</summary>
         <div class="materi-isi">
           ${pos.materi.map((m) => `<article><h3>${esc(m.judul)}</h3><p>${m.isi}</p></article>`).join("")}
@@ -396,6 +398,7 @@
       <div id="daftar-misi"></div>
       ${posTuntas(pos) ? lanjutanPos(pos) : ""}`;
 
+    pasangMedia(app);
     const wadah = $("#daftar-misi");
     pos.misi.forEach((m, i) => {
       const el = document.createElement("section");
@@ -403,6 +406,36 @@
       el.id = "misi-" + m.id;
       wadah.appendChild(el);
       renderMisi(pos, m, i, el);
+    });
+  }
+
+  /* ---------- Kartu salindia & video ---------- */
+  function kartuMedia(pos) {
+    const ME = window.MediaEkspedisi;
+    if (!ME) return "";
+    const p = P();
+    const md = (p && p.media) || { salindia: {}, video: {} };
+    const inf = ME.info(pos.id);
+    return `
+      <button class="kartu-media salindia ${md.salindia[pos.id] ? "sudah" : ""}" data-salindia="${pos.id}">
+        <span class="km-ikon" aria-hidden="true">📽️</span>
+        <span class="km-teks"><b>Salindia Pos ${pos.nomor}</b><small>${inf.nSalindia} salindia · tampil bertahap</small></span>
+        <span class="km-status">${md.salindia[pos.id] ? "✓ Disimak" : `+${D.aturan.poinSalindia} poin`}</span>
+      </button>
+      <button class="kartu-media video ${md.video[pos.id] ? "sudah" : ""}" data-video="${pos.id}">
+        <span class="km-ikon" aria-hidden="true">▶</span>
+        <span class="km-teks"><b>Video interaktif</b><small>± ${inf.durVideo} menit · ${inf.nKuis} kuis cepat</small></span>
+        <span class="km-status">${md.video[pos.id] ? "✓ Ditonton" : `+${D.aturan.poinVideo} poin`}</span>
+      </button>`;
+  }
+  function pasangMedia(root) {
+    $$("[data-salindia]", root).forEach((b) => b.addEventListener("click", () => window.MediaEkspedisi.bukaSalindia(b.dataset.salindia)));
+    $$("[data-video]", root).forEach((b) => b.addEventListener("click", () => window.MediaEkspedisi.bukaVideo(b.dataset.video)));
+  }
+  function segarkanMedia() {
+    $$("[data-media]").forEach((w) => {
+      w.innerHTML = kartuMedia(posById(w.dataset.media));
+      pasangMedia(w);
     });
   }
 
@@ -1042,6 +1075,7 @@
       soal: p.soal,
       peta: p.peta,
       argumen: p.argumen,
+      media: p.media || null,
       tulisan: { judul: T.judul, teks: T.teks, final: T.final, bonus: T.bonus, diri: T.diri, versi: T.versi.map((x) => ({ skor: x.skor, waktu: x.waktu, teks: x.teks, judul: x.judul })) },
       waktu: Date.now()
     };
@@ -1159,7 +1193,7 @@
           <h2>🚶 Langkah bermain</h2>
           <ol class="langkah">
             <li>Masukkan nama dan kelas pada halaman awal.</li>
-            <li>Buka <b>Peta</b>, lalu masuki pos yang aktif. Bacalah <b>Bekal materi</b> terlebih dahulu.</li>
+            <li>Buka <b>Peta</b>, lalu masuki pos yang aktif. Simak <b>Salindia</b> dan tonton <b>Video interaktif</b> (jawab kuis cepat saat video berhenti), lalu baca <b>Bekal materi</b>.</li>
             <li>Selesaikan setiap misi secara berurutan. Misi berikutnya terbuka setelah misi sebelumnya tuntas.</li>
             <li>Pos berikutnya terbuka setelah semua misi di pos sebelumnya tuntas.</li>
             <li>Di <b>Pos 4</b>, tulis teks eksposisi utuh, periksa, nilai diri, revisi, lalu kirim.</li>
@@ -1169,7 +1203,9 @@
         <section class="kartu">
           <h2>🪙 Aturan poin</h2>
           <table class="tabel">
-            <tr><td>Setiap soal terjawab benar</td><td>+${A.poinSoal}</td></tr>
+            <tr><td>Setiap soal terjawab benar (termasuk kuis video)</td><td>+${A.poinSoal}</td></tr>
+            <tr><td>Menyimak salindia satu pos sampai akhir</td><td>+${A.poinSalindia}</td></tr>
+            <tr><td>Menuntaskan video interaktif satu pos</td><td>+${A.poinVideo}</td></tr>
             <tr><td>Menyusun struktur teks</td><td>+${A.poinSoal * 2}</td></tr>
             <tr><td>Menemukan semua kesalahan ejaan</td><td>+${A.poinSoal * 5}</td></tr>
             <tr><td>Peta gagasan / dua argumen</td><td>+${A.poinMisiTulis} tiap misi</td></tr>
@@ -1216,8 +1252,10 @@
         <section class="kartu">
           <p class="kicker">Pos ${x.nomor} · ${esc(x.tahap)}</p>
           <h2>${esc(x.nama)}</h2>
+          <div class="media-baris" data-media="${x.id}">${kartuMedia(x)}</div>
           <div class="materi-isi">${x.materi.map((m) => `<article><h3>${esc(m.judul)}</h3><p>${m.isi}</p></article>`).join("")}</div>
         </section>`).join("")}`;
+    pasangMedia(app);
   }
 
   /* ---------------- Halaman: Rubrik ---------------- */
@@ -1385,6 +1423,7 @@
   });
   rute();
 
+  window.__ekspedisiAPI = { P, simpan, tambahPoin, beriLencana, toast, segarkanMedia };
   // Untuk pengujian
   window.__ekspedisi = { periksaTulisan, buatKode, bacaKode };
 })();

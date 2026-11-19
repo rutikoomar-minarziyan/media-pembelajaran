@@ -12,6 +12,13 @@ Peserta didik berperan sebagai penjelajah yang menempuh empat pos (level) secara
 | 3. Mengasah Bahasa | Penyuntingan | Kalimat efektif, konjungsi kausalitas, kata kerja mental, istilah teknis, buru kesalahan ejaan | Penyunting Andal 🔎 |
 | 4. Puncak Ekspedisi | Penulisan & revisi | Menulis teks eksposisi 3–4 paragraf, pemeriksaan otomatis, penilaian diri (rubrik), revisi | Penjelajah Ulung 🏔️ |
 
+## Salindia dan video interaktif
+Setiap pos dilengkapi dua materi pendukung yang dibuka dari kartu di atas *Bekal materi* (juga di halaman **Materi**):
+- **Salindia** (6–7 salindia per pos): layar penuh, butir muncul bertahap, navigasi tombol/papan ketik/geser di ponsel. Cocok juga ditayangkan guru di proyektor.
+- **Video interaktif** (±1 menit per pos): animasi bernarasi bersama pemandu “Kak Rani”, teks narasi (CC), suara narator bahasa Indonesia bila perangkat menyediakannya, pengatur kecepatan, dan **kuis cepat** yang menghentikan video sampai dijawab dengan benar.
+
+Isinya disunting di `js/media.js`.
+
 ## Elemen gamifikasi
 - **Poin** untuk setiap soal dan misi, serta **bonus revisi** di Pos 4.
 - **Lencana** tiap pos + lencana tambahan (Langkah Mantap, Pantang Menyerah).
@@ -37,6 +44,8 @@ Settings → Pages → *Deploy from a branch* → pilih cabang dan folder `/ (ro
 ```
 index.html        kerangka halaman
 css/style.css     tampilan (mode terang/gelap, ramah ponsel)
+js/media.js       isi salindia, narasi video, dan kuis video
+js/media-player.js pemutar salindia & video interaktif
 js/data.js        SELURUH isi materi, soal, misi, lencana, rubrik, dan kamus pemeriksa
 js/app.js         logika aplikasi
 ```
