@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ekspedisi Teks Eksposisi</title>
+  <meta name="description" content="Media pembelajaran interaktif berbasis gamifikasi untuk meningkatkan keterampilan menulis teks eksposisi peserta didik kelas X SMA.">
+  <meta name="theme-color" content="#2f6b4f">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6b4f'/%3E%3Cpath d='M8 50 L26 22 L36 36 L44 26 L58 50Z' fill='%23f6f1e7'/%3E%3Cpath d='M44 26 v-14 l9 4 l-9 4' fill='%23e3a03a'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="lewati" href="#app">Lewati ke konten</a>
+  <header class="atas">
+    <a class="merek" href="#/" aria-label="Ekspedisi, beranda">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 52 L26 20 L36 36 L44 26 L60 52Z" class="m1"/><path d="M44 26 v-15 l10 4.5 l-10 4.5" class="m2"/></svg>
+      <span>Ekspedisi</span>
+    </a>
+    <nav class="nav" aria-label="Navigasi utama">
+      <a href="#/peta">Peta</a>
+      <a href="#/papan">Peringkat</a>
+      <a href="#/lencana">Lencana</a>
+      <a href="#/petunjuk">Petunjuk</a>
+    </nav>
+    <div class="pemain">
+      <div id="chip-pemain" class="chip-pemain" hidden></div>
+      <button id="btn-keluar" class="btn teks kecil" title="Ganti penjelajah">Ganti</button>
+    </div>
+  </header>
+
+  <main id="app" tabindex="-1"></main>
+
+  <footer class="bawah">
+    <p>Ekspedisi — media pembelajaran menulis teks eksposisi dengan gamifikasi · Kelas X SMA Muhammadiyah 4 Depok</p>
+    <p><a href="#/materi">Materi</a> · <a href="#/rubrik">Rubrik</a> · <a href="#/petunjuk">Petunjuk</a> · <a href="#/guru">Panel Guru</a></p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
